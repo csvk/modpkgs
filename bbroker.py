@@ -576,12 +576,14 @@ class BackBroker(bt.BrokerBase):
                 order.data, self.positions[order.data].clone())
 
             # pseudo-execute the order to get the remaining cash after exec
+            prevcash = cash # SVK
             cash = self._execute(order, cash=cash, position=position)
 
             if cash >= 0.0:
                 self.submit_accept(order)
                 continue
 
+            cash = prevcash # SVK
             order.margin()
             self.notify(order)
             self._ococheck(order)
